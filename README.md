@@ -195,7 +195,7 @@ agert/
 - `GET /wp-json/wp/v2/pages?slug=sobre` - Página sobre
 
 ### Endpoints Customizados
-- `POST /wp-json/agert/v1/contact` - Envio formulário de contato
+- `POST /wp-json/agert/v1/contact` - Envio formulário de contato (requer nonce `agert_contact_form` e possui limite de 5 envios por hora por IP)
 
 ### Enqueueing de Assets
 
@@ -254,8 +254,9 @@ ls -la dist/
 ### Formulário de contato não funciona
 
 1. **Teste endpoint diretamente:** `POST /wp-json/agert/v1/contact`
-2. **Verifique configuração de email** do WordPress
-3. **Configure SMTP** se necessário (plugin WP Mail SMTP)
+2. **Inclua nonce válido:** gere com `wp_create_nonce('agert_contact_form')` e envie no campo `nonce`
+3. **Verifique configuração de email** do WordPress
+4. **Configure SMTP** se necessário (plugin WP Mail SMTP)
 
 ### CSS não carrega
 
