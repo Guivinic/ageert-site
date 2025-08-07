@@ -72,16 +72,37 @@ function agert_scripts() {
     // React build JavaScript (if exists)
     $react_js_path = get_template_directory() . '/dist/main.js';
     $react_js_uri = get_template_directory_uri() . '/dist/main.js';
-    
-    if (file_exists($react_js_path)) {
+
+    // Vendor bundle with React/ReactDOM
+    $vendors_js_path = get_template_directory() . '/dist/vendors.js';
+    $vendors_js_uri = get_template_directory_uri() . '/dist/vendors.js';
+
+    $deps = array();
+
+    if (file_exists($vendors_js_path)) {
         wp_enqueue_script(
-            'agert-react', 
-            $react_js_uri, 
-            array(), 
-            filemtime($react_js_path), 
+            'agert-react-vendors',
+            $vendors_js_uri,
+            array('react', 'react-dom'),
+            filemtime($vendors_js_path),
             true
         );
-        
+
+        $deps[] = 'agert-react-vendors';
+    } else {
+        $deps[] = 'react';
+        $deps[] = 'react-dom';
+    }
+
+    if (file_exists($react_js_path)) {
+        wp_enqueue_script(
+            'agert-react',
+            $react_js_uri,
+            $deps,
+            filemtime($react_js_path),
+            true
+        );
+
         // Localize script with WordPress data for React
         wp_localize_script('agert-react', 'agertData', array(
             'apiUrl' => home_url('/wp-json/wp/v2/'),
