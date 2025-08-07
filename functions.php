@@ -577,7 +577,13 @@ add_action('rest_api_init', 'agert_register_rest_routes');
  */
 function agert_handle_contact_form($request) {
     $params = $request->get_params();
-    
+
+    // Verify nonce
+    $nonce = isset($params['nonce']) ? sanitize_text_field($params['nonce']) : '';
+    if (!wp_verify_nonce($nonce, 'agert_contact_form')) {
+        return new WP_Error('invalid_nonce', 'Token de segurança inválido', array('status' => 403));
+    }
+
     $nome = sanitize_text_field($params['nome']);
     $email = sanitize_email($params['email']);
     $telefone = sanitize_text_field($params['telefone']);
@@ -589,12 +595,22 @@ function agert_handle_contact_form($request) {
         return new WP_Error('missing_fields', 'Campos obrigatórios não preenchidos', array('status' => 400));
     }
     
+    // Basic rate limiting - max 5 requests per hour per IP
+    $server_params = $request->get_server_params();
+    $ip = isset($server_params['REMOTE_ADDR']) ? $server_params['REMOTE_ADDR'] : 'unknown';
+    $ip_key = 'agert_contact_' . md5($ip);
+    $attempts = (int) get_transient($ip_key);
+    if ($attempts >= 5) {
+        return new WP_Error('too_many_requests', 'Muitas solicitações. Tente novamente mais tarde.', array('status' => 429));
+    }
+    set_transient($ip_key, $attempts + 1, HOUR_IN_SECONDS);
+
     // Send email
     $to = get_option('admin_email');
     $subject = 'Contato do site AGERT: ' . $assunto;
     $body = "Nome: $nome\nEmail: $email\nTelefone: $telefone\n\nMensagem:\n$mensagem";
     $headers = array('Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $email);
-    
+
     $sent = wp_mail($to, $subject, $body, $headers);
     
     if ($sent) {
