@@ -127,7 +127,7 @@ function agert_scripts() {
 add_action('wp_enqueue_scripts', 'agert_scripts');
 
 /**
- * Register custom post types (apenas reuniões)
+ * Register custom post types
  */
 function agert_register_post_types() {
     // Reuniões
@@ -151,6 +151,52 @@ function agert_register_post_types() {
         'rewrite' => array('slug' => 'reunioes'),
         'show_in_rest' => true, // Enable REST API
         'rest_base' => 'reunioes',
+    ));
+
+    // Participantes
+    register_post_type('participante', array(
+        'labels' => array(
+            'name' => __('Participantes', 'agert'),
+            'singular_name' => __('Participante', 'agert'),
+            'add_new' => __('Adicionar Novo', 'agert'),
+            'add_new_item' => __('Adicionar Participante', 'agert'),
+            'edit_item' => __('Editar Participante', 'agert'),
+            'new_item' => __('Novo Participante', 'agert'),
+            'view_item' => __('Ver Participante', 'agert'),
+            'search_items' => __('Buscar Participantes', 'agert'),
+            'not_found' => __('Nenhum participante encontrado', 'agert'),
+            'all_items' => __('Todos os Participantes', 'agert'),
+        ),
+        'public' => false,
+        'show_ui' => true,
+        'publicly_queryable' => false,
+        'menu_icon' => 'dashicons-id',
+        'supports' => array('title', 'custom-fields'),
+        'show_in_rest' => true,
+        'rest_base' => 'participantes',
+    ));
+
+    // Anexos
+    register_post_type('anexo', array(
+        'labels' => array(
+            'name' => __('Anexos', 'agert'),
+            'singular_name' => __('Anexo', 'agert'),
+            'add_new' => __('Adicionar Novo', 'agert'),
+            'add_new_item' => __('Adicionar Anexo', 'agert'),
+            'edit_item' => __('Editar Anexo', 'agert'),
+            'new_item' => __('Novo Anexo', 'agert'),
+            'view_item' => __('Ver Anexo', 'agert'),
+            'search_items' => __('Buscar Anexos', 'agert'),
+            'not_found' => __('Nenhum anexo encontrado', 'agert'),
+            'all_items' => __('Todos os Anexos', 'agert'),
+        ),
+        'public' => false,
+        'show_ui' => true,
+        'publicly_queryable' => false,
+        'menu_icon' => 'dashicons-paperclip',
+        'supports' => array('title'),
+        'show_in_rest' => true,
+        'rest_base' => 'anexos',
     ));
 }
 add_action('init', 'agert_register_post_types');
@@ -176,7 +222,7 @@ function agert_register_taxonomies() {
 add_action('init', 'agert_register_taxonomies');
 
 /**
- * Add custom meta boxes (apenas para reuniões)
+ * Add custom meta boxes
  */
 function agert_add_meta_boxes() {
     // Reunião meta box
@@ -188,8 +234,78 @@ function agert_add_meta_boxes() {
         'normal',
         'high'
     );
+
+    // Participante meta box
+    add_meta_box(
+        'participante_details',
+        __('Detalhes do Participante', 'agert'),
+        'agert_participante_meta_box',
+        'participante',
+        'normal',
+        'high'
+    );
+
+    // Anexo meta box
+    add_meta_box(
+        'anexo_file',
+        __('Arquivo do Anexo', 'agert'),
+        'agert_anexo_meta_box',
+        'anexo',
+        'normal',
+        'high'
+    );
 }
 add_action('add_meta_boxes', 'agert_add_meta_boxes');
+
+/**
+ * Participante meta box callback
+ */
+function agert_participante_meta_box($post) {
+    wp_nonce_field('agert_participante_meta', 'agert_participante_nonce');
+    $cargo = get_post_meta($post->ID, '_cargo', true);
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="cargo"><?php _e('Cargo', 'agert'); ?></label></th>
+            <td><input type="text" id="cargo" name="cargo" value="<?php echo esc_attr($cargo); ?>" class="regular-text" /></td>
+        </tr>
+    </table>
+    <?php
+}
+
+/**
+ * Anexo meta box callback
+ */
+function agert_anexo_meta_box($post) {
+    wp_nonce_field('agert_anexo_meta', 'agert_anexo_nonce');
+    $file_id = get_post_meta($post->ID, '_file_id', true);
+    $tipo = get_post_meta($post->ID, '_tipo', true);
+    $current_url = $file_id ? wp_get_attachment_url($file_id) : get_post_meta($post->ID, '_file_url', true);
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="anexo_file_upload"><?php _e('Arquivo', 'agert'); ?></label></th>
+            <td>
+                <input type="file" id="anexo_file_upload" name="anexo_file_upload" />
+                <?php if ($current_url) : ?>
+                    <p><a href="<?php echo esc_url($current_url); ?>" target="_blank"><?php _e('Ver arquivo atual', 'agert'); ?></a></p>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="anexo_tipo"><?php _e('Tipo', 'agert'); ?></label></th>
+            <td>
+                <select id="anexo_tipo" name="anexo_tipo">
+                    <option value="Ata" <?php selected($tipo, 'Ata'); ?>><?php _e('Ata', 'agert'); ?></option>
+                    <option value="Resolução" <?php selected($tipo, 'Resolução'); ?>><?php _e('Resolução', 'agert'); ?></option>
+                    <option value="Relatório" <?php selected($tipo, 'Relatório'); ?>><?php _e('Relatório', 'agert'); ?></option>
+                    <option value="Outro" <?php selected($tipo, 'Outro'); ?>><?php _e('Outro', 'agert'); ?></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
 
 /**
  * Reunião meta box callback
@@ -204,7 +320,19 @@ function agert_reuniao_meta_box($post) {
     $video_url = get_post_meta($post->ID, '_video_url', true);
     $video_duration = get_post_meta($post->ID, '_video_duration', true);
     $participantes = get_post_meta($post->ID, '_participantes', true);
-    $documentos = get_post_meta($post->ID, '_documentos', true);
+    $anexos = get_post_meta($post->ID, '_anexos', true);
+    $all_participantes = get_posts(array(
+        'post_type' => 'participante',
+        'numberposts' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ));
+    $all_anexos = get_posts(array(
+        'post_type' => 'anexo',
+        'numberposts' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ));
     ?>
     <table class="form-table">
         <tr>
@@ -232,14 +360,35 @@ function agert_reuniao_meta_box($post) {
             <td><input type="text" id="video_duration" name="video_duration" value="<?php echo esc_attr($video_duration); ?>" class="regular-text" placeholder="Ex: 2:45:30" /></td>
         </tr>
         <tr>
-            <th><label for="participantes"><?php _e('Participantes', 'agert'); ?></label></th>
-            <td><textarea id="participantes" name="participantes" rows="5" class="large-text"><?php echo esc_textarea($participantes); ?></textarea></td>
+            <th><label><?php _e('Participantes', 'agert'); ?></label></th>
+            <td>
+                <?php if (!empty($all_participantes)) : ?>
+                    <?php foreach ($all_participantes as $p) : $cargo = get_post_meta($p->ID, '_cargo', true); ?>
+                        <label>
+                            <input type="checkbox" name="participantes[]" value="<?php echo esc_attr($p->ID); ?>" <?php checked(is_array($participantes) && in_array($p->ID, $participantes)); ?> />
+                            <?php echo esc_html($p->post_title . ($cargo ? ' - ' . $cargo : '')); ?>
+                        </label><br />
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <p><?php _e('Nenhum participante cadastrado.', 'agert'); ?></p>
+                <?php endif; ?>
+            </td>
         </tr>
         <tr>
-            <th><label for="documentos"><?php _e('Documentos Anexos (JSON)', 'agert'); ?></label></th>
+            <th><label><?php _e('Anexos', 'agert'); ?></label></th>
             <td>
-                <textarea id="documentos" name="documentos" rows="8" class="large-text" placeholder='[{"title": "Ata da Reunião", "url": "http://example.com/doc.pdf", "size": "2.3 MB", "type": "Ata"}]'><?php echo esc_textarea($documentos); ?></textarea>
-                <p class="description"><?php _e('Adicione documentos em formato JSON. Exemplo acima.', 'agert'); ?></p>
+                <input type="file" name="anexo_upload[]" multiple />
+                <p class="description"><?php _e('Envie novos arquivos ou selecione anexos existentes abaixo.', 'agert'); ?></p>
+                <?php if (!empty($all_anexos)) : ?>
+                    <?php foreach ($all_anexos as $a) : ?>
+                        <label>
+                            <input type="checkbox" name="anexos[]" value="<?php echo esc_attr($a->ID); ?>" <?php checked(is_array($anexos) && in_array($a->ID, $anexos)); ?> />
+                            <?php echo esc_html($a->post_title); ?>
+                        </label><br />
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <p><?php _e('Nenhum anexo cadastrado.', 'agert'); ?></p>
+                <?php endif; ?>
             </td>
         </tr>
     </table>
@@ -255,15 +404,148 @@ function agert_save_meta_boxes($post_id) {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         if (!current_user_can('edit_post', $post_id)) return;
         
-        $fields = array('data_reuniao', 'hora_reuniao', 'local_reuniao', 'duracao', 'video_url', 'video_duration', 'participantes', 'documentos');
+        $fields = array('data_reuniao', 'hora_reuniao', 'local_reuniao', 'duracao', 'video_url', 'video_duration');
         foreach ($fields as $field) {
             if (isset($_POST[$field])) {
                 update_post_meta($post_id, '_' . $field, sanitize_textarea_field($_POST[$field]));
             }
         }
+
+        if (isset($_POST['participantes'])) {
+            $selected = array_map('intval', (array) $_POST['participantes']);
+            update_post_meta($post_id, '_participantes', $selected);
+        } else {
+            delete_post_meta($post_id, '_participantes');
+        }
+
+        $selected_anexos = isset($_POST['anexos']) ? array_map('intval', (array) $_POST['anexos']) : array();
+
+        if (!empty($_FILES['anexo_upload']['name'][0])) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            foreach ($_FILES['anexo_upload']['name'] as $key => $value) {
+                if ($value) {
+                    $file = array(
+                        'name' => $_FILES['anexo_upload']['name'][$key],
+                        'type' => $_FILES['anexo_upload']['type'][$key],
+                        'tmp_name' => $_FILES['anexo_upload']['tmp_name'][$key],
+                        'error' => $_FILES['anexo_upload']['error'][$key],
+                        'size' => $_FILES['anexo_upload']['size'][$key],
+                    );
+                    $_FILES['agert_single_anexo'] = $file;
+                    $attachment_id = media_handle_upload('agert_single_anexo', 0);
+                    if (!is_wp_error($attachment_id)) {
+                        $anexo_id = wp_insert_post(array(
+                            'post_title' => sanitize_file_name($value),
+                            'post_type' => 'anexo',
+                            'post_status' => 'publish',
+                        ));
+                        if ($anexo_id && !is_wp_error($anexo_id)) {
+                            update_post_meta($anexo_id, '_file_id', $attachment_id);
+                            $file_path = get_attached_file($attachment_id);
+                            update_post_meta($anexo_id, '_file_size', size_format(filesize($file_path)));
+                            update_post_meta($anexo_id, '_file_type', get_post_mime_type($attachment_id));
+                            $selected_anexos[] = $anexo_id;
+                        }
+                    }
+                }
+            }
+            unset($_FILES['agert_single_anexo']);
+        }
+
+        if (!empty($selected_anexos)) {
+            update_post_meta($post_id, '_anexos', array_unique($selected_anexos));
+        } else {
+            delete_post_meta($post_id, '_anexos');
+        }
     }
 }
 add_action('save_post', 'agert_save_meta_boxes');
+
+/**
+ * Save participante meta box data
+ */
+function agert_save_participante_meta($post_id) {
+    if (isset($_POST['agert_participante_nonce']) && wp_verify_nonce($_POST['agert_participante_nonce'], 'agert_participante_meta')) {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+        if (isset($_POST['cargo'])) {
+            update_post_meta($post_id, '_cargo', sanitize_text_field($_POST['cargo']));
+        }
+    }
+}
+add_action('save_post_participante', 'agert_save_participante_meta');
+
+/**
+ * Save anexo meta box data
+ */
+function agert_save_anexo_meta($post_id) {
+    if (isset($_POST['agert_anexo_nonce']) && wp_verify_nonce($_POST['agert_anexo_nonce'], 'agert_anexo_meta')) {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+
+        if (!empty($_FILES['anexo_file_upload']['name'])) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            $attachment_id = media_handle_upload('anexo_file_upload', 0);
+            if (!is_wp_error($attachment_id)) {
+                update_post_meta($post_id, '_file_id', $attachment_id);
+                $file_path = get_attached_file($attachment_id);
+                update_post_meta($post_id, '_file_size', size_format(filesize($file_path)));
+                update_post_meta($post_id, '_file_type', get_post_mime_type($attachment_id));
+                update_post_meta($post_id, '_file_url', wp_get_attachment_url($attachment_id));
+            }
+        }
+
+        if (isset($_POST['anexo_tipo'])) {
+            update_post_meta($post_id, '_tipo', sanitize_text_field($_POST['anexo_tipo']));
+        }
+    }
+}
+add_action('save_post_anexo', 'agert_save_anexo_meta');
+
+/**
+ * Remove anexo associations when an anexo is deleted
+ */
+function agert_remove_anexo_associations($post_id) {
+    if (get_post_type($post_id) !== 'anexo') {
+        return;
+    }
+    $meetings = get_posts(array(
+        'post_type' => 'reuniao',
+        'numberposts' => -1,
+        'meta_query' => array(
+            array(
+                'key' => '_anexos',
+                'value' => '"' . $post_id . '"',
+                'compare' => 'LIKE',
+            )
+        )
+    ));
+    foreach ($meetings as $meeting) {
+        $attached = get_post_meta($meeting->ID, '_anexos', true);
+        if (is_array($attached)) {
+            $index = array_search($post_id, $attached);
+            if ($index !== false) {
+                unset($attached[$index]);
+                update_post_meta($meeting->ID, '_anexos', $attached);
+            }
+        }
+    }
+}
+add_action('before_delete_post', 'agert_remove_anexo_associations');
 
 /**
  * Add custom REST API endpoints
@@ -323,8 +605,39 @@ function agert_add_custom_fields_to_rest() {
                 'duracao' => get_post_meta($post['id'], '_duracao', true),
                 'video_url' => get_post_meta($post['id'], '_video_url', true),
                 'video_duration' => get_post_meta($post['id'], '_video_duration', true),
-                'participantes' => get_post_meta($post['id'], '_participantes', true),
-                'documentos' => json_decode(get_post_meta($post['id'], '_documentos', true), true),
+                'participantes' => (function($ids) {
+                    if (!is_array($ids)) {
+                        $ids = array();
+                    }
+                    return array_map(function($pid) {
+                        $name = get_the_title($pid);
+                        $cargo = get_post_meta($pid, '_cargo', true);
+                        return $cargo ? $name . ' - ' . $cargo : $name;
+                    }, $ids);
+                })(get_post_meta($post['id'], '_participantes', true)),
+                'anexos' => (function($ids) {
+                    if (!is_array($ids)) {
+                        $ids = array();
+                    }
+                    return array_map(function($aid) {
+                        $file_id = get_post_meta($aid, '_file_id', true);
+                        $title = get_the_title($aid);
+                        $tipo = get_post_meta($aid, '_tipo', true);
+                        $url = $file_id ? wp_get_attachment_url($file_id) : get_post_meta($aid, '_file_url', true);
+                        $size = $file_id ? size_format(filesize(get_attached_file($file_id))) : get_post_meta($aid, '_file_size', true);
+                        $mime = $file_id ? get_post_mime_type($file_id) : get_post_meta($aid, '_file_type', true);
+                        if (!$tipo) {
+                            $tipo = $mime;
+                        }
+                        return array(
+                            'id' => $aid,
+                            'title' => $title,
+                            'url' => $url,
+                            'size' => $size,
+                            'type' => $tipo,
+                        );
+                    }, $ids);
+                })(get_post_meta($post['id'], '_anexos', true)),
             );
         }
     ));
@@ -478,9 +791,33 @@ function agert_insert_sample_data() {
     // Create required pages first
     agert_create_required_pages();
     
+    // Create sample participants if none exist
+    $existing_participants = get_posts(array('post_type' => 'participante', 'posts_per_page' => 3));
+    $participant_ids = array();
+    if (empty($existing_participants)) {
+        $sample_participants = array(
+            array('name' => 'Dr. João Silva Santos', 'cargo' => 'Presidente'),
+            array('name' => 'Maria Santos', 'cargo' => 'Secretária'),
+            array('name' => 'João Oliveira', 'cargo' => 'Diretor Técnico'),
+        );
+        foreach ($sample_participants as $p) {
+            $pid = wp_insert_post(array(
+                'post_title' => $p['name'],
+                'post_type' => 'participante',
+                'post_status' => 'publish',
+            ));
+            if ($pid && !is_wp_error($pid)) {
+                update_post_meta($pid, '_cargo', $p['cargo']);
+                $participant_ids[] = $pid;
+            }
+        }
+    } else {
+        $participant_ids = wp_list_pluck($existing_participants, 'ID');
+    }
+
     // Create sample reunião if none exists
     $existing_meetings = get_posts(array('post_type' => 'reuniao', 'posts_per_page' => 1));
-    
+
     if (empty($existing_meetings)) {
         $reuniao_id = wp_insert_post(array(
             'post_title' => '1ª Reunião Ordinária - Janeiro 2025',
@@ -489,7 +826,7 @@ function agert_insert_sample_data() {
             'post_type' => 'reuniao',
             'post_excerpt' => 'Discussão sobre regulamentação de serviços públicos delegados'
         ));
-        
+
         if ($reuniao_id && !is_wp_error($reuniao_id)) {
             update_post_meta($reuniao_id, '_data_reuniao', '2025-01-15');
             update_post_meta($reuniao_id, '_hora_reuniao', '14:00');
@@ -497,22 +834,41 @@ function agert_insert_sample_data() {
             update_post_meta($reuniao_id, '_duracao', '2h 45min');
             update_post_meta($reuniao_id, '_video_url', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             update_post_meta($reuniao_id, '_video_duration', '2:45:30');
-            update_post_meta($reuniao_id, '_participantes', "Dr. João Silva Santos - Presidente\nMaria Santos - Secretária\nJoão Oliveira - Diretor Técnico");
-            update_post_meta($reuniao_id, '_documentos', json_encode([
-                [
+            update_post_meta($reuniao_id, '_participantes', $participant_ids);
+
+            // Sample attachments
+            $sample_attachments = array(
+                array(
                     'title' => 'Ata da Reunião - Janeiro 2025',
                     'url' => 'https://example.com/ata-jan-2025.pdf',
                     'size' => '2.3 MB',
                     'type' => 'Ata'
-                ],
-                [
+                ),
+                array(
                     'title' => 'Resolução AGERT 001/2025',
                     'url' => 'https://example.com/resolucao-001-2025.pdf',
                     'size' => '1.8 MB',
                     'type' => 'Resolução'
-                ]
-            ]));
-            
+                )
+            );
+
+            $anexo_ids = array();
+            foreach ($sample_attachments as $att) {
+                $aid = wp_insert_post(array(
+                    'post_title' => $att['title'],
+                    'post_type' => 'anexo',
+                    'post_status' => 'publish'
+                ));
+                if ($aid && !is_wp_error($aid)) {
+                    update_post_meta($aid, '_file_url', $att['url']);
+                    update_post_meta($aid, '_file_size', $att['size']);
+                    update_post_meta($aid, '_file_type', $att['type']);
+                    update_post_meta($aid, '_tipo', $att['type']);
+                    $anexo_ids[] = $aid;
+                }
+            }
+            update_post_meta($reuniao_id, '_anexos', $anexo_ids);
+
             // Set term
             wp_set_object_terms($reuniao_id, 'Ordinária', 'tipo_reuniao');
         }
