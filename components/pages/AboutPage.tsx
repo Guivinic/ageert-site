@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Building, Target, Eye, Heart, Scale, Users } from 'lucide-react';
 
@@ -116,9 +117,11 @@ export default function AboutPage({ pageData }: AboutPageProps) {
         <div className="mb-12">
           <Card>
             <CardContent className="p-8">
-              <div 
+              <div
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: data.content?.rendered || '' }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(data.content?.rendered || ''),
+                }}
               />
             </CardContent>
           </Card>

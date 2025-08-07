@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { User, GraduationCap, Briefcase, MessageCircle } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
@@ -162,9 +163,13 @@ export default function PresidentPage({ pageData }: PresidentPageProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div 
+                <div
                   className="prose prose-sm max-w-none text-muted-foreground"
-                  dangerouslySetInnerHTML={{ __html: data.content?.rendered || content.biografia }}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      data.content?.rendered || content.biografia,
+                    ),
+                  }}
                 />
               </CardContent>
             </Card>
