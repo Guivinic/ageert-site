@@ -445,7 +445,10 @@ function agert_save_meta_boxes($post_id) {
                         if ($anexo_id && !is_wp_error($anexo_id)) {
                             update_post_meta($anexo_id, '_file_id', $attachment_id);
                             $file_path = get_attached_file($attachment_id);
-                            update_post_meta($anexo_id, '_file_size', size_format(filesize($file_path)));
+                            $file_size = file_exists($file_path)
+                                ? size_format(filesize($file_path))
+                                : get_post_meta($anexo_id, '_file_size', true);
+                            update_post_meta($anexo_id, '_file_size', $file_size);
                             update_post_meta($anexo_id, '_file_type', get_post_mime_type($attachment_id));
                             $selected_anexos[] = $anexo_id;
                         }
@@ -503,7 +506,10 @@ function agert_save_anexo_meta($post_id) {
             if (!is_wp_error($attachment_id)) {
                 update_post_meta($post_id, '_file_id', $attachment_id);
                 $file_path = get_attached_file($attachment_id);
-                update_post_meta($post_id, '_file_size', size_format(filesize($file_path)));
+                $file_size = file_exists($file_path)
+                    ? size_format(filesize($file_path))
+                    : get_post_meta($post_id, '_file_size', true);
+                update_post_meta($post_id, '_file_size', $file_size);
                 update_post_meta($post_id, '_file_type', get_post_mime_type($attachment_id));
                 update_post_meta($post_id, '_file_url', wp_get_attachment_url($attachment_id));
             }
@@ -624,7 +630,11 @@ function agert_add_custom_fields_to_rest() {
                         $title = get_the_title($aid);
                         $tipo = get_post_meta($aid, '_tipo', true);
                         $url = $file_id ? wp_get_attachment_url($file_id) : get_post_meta($aid, '_file_url', true);
-                        $size = $file_id ? size_format(filesize(get_attached_file($file_id))) : get_post_meta($aid, '_file_size', true);
+                        $size = get_post_meta($aid, '_file_size', true);
+                        if ($file_id) {
+                            $file_path = get_attached_file($file_id);
+                            $size = file_exists($file_path) ? size_format(filesize($file_path)) : $size;
+                        }
                         $mime = $file_id ? get_post_mime_type($file_id) : get_post_meta($aid, '_file_type', true);
                         if (!$tipo) {
                             $tipo = $mime;
