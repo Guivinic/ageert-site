@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DOMPurify from "dompurify";
 import {
   Card,
   CardContent,
@@ -77,7 +78,11 @@ export default function MeetingDetailPage({ meetingId, onNavigate }: MeetingDeta
           </div>
 
           {meeting.content?.rendered && (
-            <div dangerouslySetInnerHTML={{ __html: meeting.content.rendered }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(meeting.content.rendered),
+              }}
+            />
           )}
 
           {attachments.length > 0 && (

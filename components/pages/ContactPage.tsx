@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
@@ -219,9 +220,11 @@ export default function ContactPage({ pageData }: ContactPageProps) {
             {pageData?.content?.rendered && (
               <Card>
                 <CardContent className="p-6">
-                  <div 
+                  <div
                     className="prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: pageData.content.rendered }}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(pageData.content.rendered),
+                    }}
                   />
                 </CardContent>
               </Card>
