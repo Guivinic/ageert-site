@@ -1,0 +1,79 @@
+{
+  "reunioes": [
+    {
+      "title": "1ª Reunião Ordinária - Janeiro 2025",
+      "content": "Reunião ordinária realizada para discussão dos assuntos regulares da AGERT, incluindo análise de relatórios mensais, aprovação de resoluções e discussão de questões administrativas relacionadas aos serviços públicos delegados do município de Timon.\n\nDurante esta reunião foram apresentados os relatórios de fiscalização do último trimestre de 2024, discutidas as metas para o ano de 2025 e aprovadas as diretrizes para a modernização dos processos de regulação.\n\nA reunião contou com a participação de todos os diretores da agência e representantes da sociedade civil, garantindo transparência e participação social nas decisões da AGERT.",
+      "excerpt": "Discussão sobre regulamentação de serviços públicos delegados",
+      "status": "publish",
+      "date": "2025-01-15T14:00:00",
+      "featured_media": null,
+      "custom_fields": {
+        "_data_reuniao": "2025-01-15",
+        "_hora_reuniao": "14:00",
+        "_local_reuniao": "Sede da AGERT - Sala de Reuniões Principal",
+        "_duracao": "2h 45min",
+        "_video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "_video_duration": "2:45:30",
+        "_participantes": "Dr. João Carlos Silva Santos - Presidente da AGERT\nDra. Maria José Santos - Secretária Executiva\nEng. Roberto Lima - Diretor Técnico\nDra. Ana Costa - Diretora Jurídica\nCarlos Mendes - Diretor de Fiscalização",
+        "_documentos": "[{\"title\": \"Ata da 1ª Reunião Ordinária - Janeiro 2025\", \"url\": \"https://agert.timon.ma.gov.br/wp-content/uploads/2025/01/ata-1a-reuniao-ordinaria-jan-2025.pdf\", \"size\": \"2.8 MB\", \"type\": \"Ata\"}, {\"title\": \"Resolução AGERT nº 001/2025 - Tarifas de Transporte\", \"url\": \"https://agert.timon.ma.gov.br/wp-content/uploads/2025/01/resolucao-001-2025-tarifas.pdf\", \"size\": \"1.5 MB\", \"type\": \"Resolução\"}, {\"title\": \"Relatório de Atividades - Dezembro 2024\", \"url\": \"https://agert.timon.ma.gov.br/wp-content/uploads/2025/01/relatorio-atividades-dez-2024.pdf\", \"size\": \"4.2 MB\", \"type\": \"Relatório\"}]"
+      },
+      "taxonomies": {
+        "tipo_reuniao": ["Ordinária"]
+      }
+    }
+  ],
+  "presidente": [
+    {
+      "title": "Dr. João Carlos Silva Santos",
+      "content": "Dr. João Carlos Silva Santos assume a presidência da AGERT com mais de 15 anos de experiência em regulação de serviços públicos e administração municipal. Graduado em Direito pela Universidade Estadual do Maranhão e Mestre em Administração Pública pela UFMA.\n\nAo longo de sua carreira profissional, desenvolveu expertise em regulação de serviços públicos, tendo atuado em diversos órgãos da administração municipal e consultoria especializada, sempre com foco na melhoria da qualidade dos serviços prestados à população.\n\nComo presidente da AGERT, tem trabalhado incansavelmente para modernizar os processos regulatórios e garantir maior transparência nas atividades da agência, sempre priorizando o interesse público e o bem-estar dos cidadãos timonenses.",
+      "status": "publish",
+      "date": "2024-01-01T00:00:00",
+      "featured_media": null,
+      "custom_fields": {
+        "_cargo": "Presidente da AGERT",
+        "_mandato": "2020 - 2025",
+        "_formacao": "Direito",
+        "_especializacao": "Administração Pública",
+        "_experiencia": "[{\"period\": \"2020 - Presente\", \"position\": \"Presidente da AGERT\", \"organization\": \"Agência Reguladora de Timon\"}, {\"period\": \"2015 - 2020\", \"position\": \"Diretor de Regulação\", \"organization\": \"Secretaria Municipal de Serviços Públicos\"}, {\"period\": \"2010 - 2015\", \"position\": \"Coordenador Técnico\", \"organization\": \"Departamento de Concessões\"}, {\"period\": \"2005 - 2010\", \"position\": \"Analista de Regulação\", \"organization\": \"Consultoria em Serviços Públicos\"}]",
+        "_educacao": "[{\"degree\": \"Mestrado em Administração Pública\", \"institution\": \"Universidade Federal do Maranhão\", \"year\": \"2008\"}, {\"degree\": \"Pós-graduação em Direito Administrativo\", \"institution\": \"Faculdade de Direito de Teresina\", \"year\": \"2006\"}, {\"degree\": \"Graduação em Direito\", \"institution\": \"Universidade Estadual do Maranhão\", \"year\": \"2004\"}]",
+        "_mensagem": "É com grande satisfação e senso de responsabilidade que assumo a presidência da AGERT, comprometido em garantir que os serviços públicos delegados em nosso município sejam prestados com a qualidade e eficiência que a população timonense merece.\n\nNossa missão é clara: regular, fiscalizar e garantir que os serviços essenciais cheguem a todos os cidadãos com transparência, qualidade e preços justos. Trabalharemos incansavelmente para modernizar nossa agência e torná-la cada vez mais próxima da população.\n\nConvido todos os timonenses a conhecerem e acompanharem nosso trabalho. A AGERT está de portas abertas para receber sugestões, críticas e contribuições que nos ajudem a melhorar continuamente nossos serviços."
+      }
+    }
+  ],
+  "contatos": [
+    {
+      "title": "Informações de Contato AGERT",
+      "content": "Informações para contato com a AGERT - Agência Reguladora de Serviços Públicos Delegados do Município de Timon.",
+      "status": "publish", 
+      "date": "2024-01-01T00:00:00",
+      "custom_fields": {
+        "_telefone": "(99) 3212-3456",
+        "_email": "contato@agert.timon.ma.gov.br",
+        "_endereco": "Rua dos Reguladores, 123 - Centro\nTimon/MA - CEP: 65630-100",
+        "_horario": "Segunda a Sexta-feira\n08:00 às 17:00",
+        "_mapa_embed": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.0!2d-44.0!3d-5.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMDAnMDAuMCJTIDQ0wrAwMCcwMC4wIlc!5e0!3m2!1spt-BR!2sbr!4v1234567890!5m2!1spt-BR!2sbr\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>"
+      }
+    }
+  ],
+  "taxonomies": {
+    "tipo_reuniao": [
+      {
+        "name": "Ordinária",
+        "slug": "ordinaria",
+        "description": "Reuniões ordinárias mensais da AGERT"
+      },
+      {
+        "name": "Extraordinária", 
+        "slug": "extraordinaria",
+        "description": "Reuniões extraordinárias convocadas quando necessário"
+      }
+    ]
+  },
+  "theme_options": {
+    "blogname": "AGERT - Agência Reguladora de Timon",
+    "blogdescription": "Agência Reguladora de Serviços Públicos Delegados do Município de Timon",
+    "timezone_string": "America/Sao_Paulo",
+    "date_format": "d/m/Y",
+    "time_format": "H:i"
+  }
+}
