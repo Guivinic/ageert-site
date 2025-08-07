@@ -404,10 +404,17 @@ function agert_save_meta_boxes($post_id) {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         if (!current_user_can('edit_post', $post_id)) return;
         
-        $fields = array('data_reuniao', 'hora_reuniao', 'local_reuniao', 'duracao', 'video_url', 'video_duration');
-        foreach ($fields as $field) {
+        $fields = array(
+            'data_reuniao'   => 'sanitize_text_field',
+            'hora_reuniao'   => 'sanitize_text_field',
+            'local_reuniao'  => 'sanitize_text_field',
+            'duracao'        => 'sanitize_text_field',
+            'video_url'      => 'esc_url_raw',
+            'video_duration' => 'sanitize_text_field',
+        );
+        foreach ($fields as $field => $sanitize_callback) {
             if (isset($_POST[$field])) {
-                update_post_meta($post_id, '_' . $field, sanitize_textarea_field($_POST[$field]));
+                update_post_meta($post_id, '_' . $field, call_user_func($sanitize_callback, $_POST[$field]));
             }
         }
 
