@@ -79,7 +79,7 @@ module.exports = {
                         options: {
                             postcssOptions: {
                                 plugins: [
-                                    require('tailwindcss'),
+                                    require('@tailwindcss/postcss'),
                                     require('autoprefixer')
                                 ]
                             }
