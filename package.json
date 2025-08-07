@@ -10,8 +10,8 @@
     "build:analyze": "cross-env NODE_ENV=production webpack-bundle-analyzer dist/main.js",
     "clean": "rimraf dist",
     "type-check": "tsc --noEmit",
-    "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix"
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" \"components/**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" \"components/**/*.{ts,tsx,js,jsx}\" --fix"
   },
   "keywords": [
     "wordpress",
@@ -53,7 +53,8 @@
     "webpack": "^5.88.0",
     "webpack-bundle-analyzer": "^4.9.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.1",
+    "@eslint/js": "^8.50.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.0",
